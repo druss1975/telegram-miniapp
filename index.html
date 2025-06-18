@@ -2,40 +2,86 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Оформление заказа</title>
+  <title>Магазин Telegram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
-    h2 { margin-top: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .product-image {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .product-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .product-price {
+      font-size: 18px;
+      color: #2e8b57;
+      margin-bottom: 20px;
+    }
     input, button {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
+      padding: 14px;
       font-size: 16px;
+      margin-bottom: 15px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
       background: #24a0ed;
       color: white;
       border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1b85d6;
     }
   </style>
 </head>
 <body>
-  <h2>🛍 Оформление заказа</h2>
-  <input id="product" placeholder="Название товара" />
-  <input id="count" type="number" placeholder="Количество" />
-  <input id="phone" type="tel" placeholder="Телефон" />
+  <div class="container">
+    <div class="product-card">
+      <img src="https://via.placeholder.com/400x200.png?text=Фото+товара" alt="Товар" class="product-image" />
+      <div class="product-title">Умная колонка</div>
+      <div class="product-price">6 990 ₽</div>
 
-  <button onclick="sendData()">Отправить</button>
+      <input id="qty" type="number" placeholder="Количество" min="1" />
+      <input id="phone" type="tel" placeholder="Ваш телефон" />
+
+      <button onclick="sendOrder()">Оформить заказ</button>
+    </div>
+  </div>
 
   <script>
-    function sendData() {
+    function sendOrder() {
+      const qty = document.getElementById("qty").value;
+      const phone = document.getElementById("phone").value;
       const data = {
-        товар: document.getElementById("product").value,
-        количество: document.getElementById("count").value,
-        телефон: document.getElementById("phone").value
+        товар: "Умная колонка",
+        количество: qty,
+        телефон: phone
       };
       Telegram.WebApp.sendData(JSON.stringify(data));
       Telegram.WebApp.close();
@@ -43,3 +89,5 @@
   </script>
 </body>
 </html>
+
+
