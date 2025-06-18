@@ -2,51 +2,134 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Каталог</title>
+  <title>Магазин Telegram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-    .item { background: white; padding: 15px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .item img { width: 100%; border-radius: 6px; margin-bottom: 10px; }
-    .item h3, .item p { margin: 5px 0; }
-    button { width: 100%; padding: 10px; margin-top: 10px; background: #007acc; border: none; color: white; border-radius: 6px; font-size: 16px; }
-    input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; }
-    #checkout { margin-top: 20px; background: #2e8b57; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 480px;
+      margin: auto;
+    }
+    .product {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .product-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 5px 0;
+    }
+    .product-price {
+      font-size: 16px;
+      color: #2e8b57;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    #cart-area {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      margin-top: 20px;
+    }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
-  <h2>🛒 Каталог товаров</h2>
+  <div class="container">
+    <h2>🛍️ Каталог товаров</h2>
 
-  <div class="item">
-    <img src="https://via.placeholder.com/400x200.png?text=Умная+колонка" alt="">
-    <h3>Умная колонка</h3>
-    <p>Цена: 6 990 ₽</p>
-    <button onclick="addToCart('Умная колонка', 6990)">Добавить в корзину</button>
+    <div class="product">
+      <img src="https://via.placeholder.com/400x200.png?text=Умная+колонка" />
+      <div class="product-title">Умная колонка</div>
+      <div class="product-price">6 990 ₽</div>
+      <button onclick="addToCart('Умная колонка', 6990)">Добавить в корзину</button>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/400x200.png?text=Видеорегистратор" />
+      <div class="product-title">Видеорегистратор</div>
+      <div class="product-price">3 500 ₽</div>
+      <button onclick="addToCart('Видеорегистратор', 3500)">Добавить в корзину</button>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/400x200.png?text=Авто+Зарядка" />
+      <div class="product-title">Автомобильное зарядное</div>
+      <div class="product-price">990 ₽</div>
+      <button onclick="addToCart('Автозарядка', 990)">Добавить в корзину</button>
+    </div>
+
+    <div id="cart-area">
+      <h3>🧺 Ваша корзина:</h3>
+      <ul id="cart-list"></ul>
+      <p id="cart-total"><strong>Сумма: 0 ₽</strong></p>
+    </div>
+
+    <input type="text" id="name" placeholder="Ваше имя" />
+    <input type="tel" id="phone" placeholder="Телефон" />
+    <button onclick="checkout()">Оформить заказ</button>
   </div>
-
-  <div class="item">
-    <img src="https://via.placeholder.com/400x200.png?text=Видеорегистратор" alt="">
-    <h3>Видеорегистратор</h3>
-    <p>Цена: 3 500 ₽</p>
-    <button onclick="addToCart('Видеорегистратор', 3500)">Добавить в корзину</button>
-  </div>
-
-  <div class="item">
-    <img src="https://via.placeholder.com/400x200.png?text=Авто+Зарядка" alt="">
-    <h3>Автомобильное зарядное</h3>
-    <p>Цена: 990 ₽</p>
-    <button onclick="addToCart('Автозарядка', 990)">Добавить в корзину</button>
-  </div>
-
-  <input type="text" id="name" placeholder="Ваше имя" />
-  <input type="tel" id="phone" placeholder="Телефон" />
-  <button id="checkout" onclick="checkout()">Оформить заказ</button>
 
   <script>
     const cart = [];
 
+    function updateCartDisplay() {
+      const list = document.getElementById('cart-list');
+      const total = document.getElementById('cart-total');
+      list.innerHTML = '';
+      let sum = 0;
+
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} — ${item.price} ₽`;
+        list.appendChild(li);
+        sum += item.price;
+      });
+
+      total.innerHTML = `<strong>Сумма: ${sum} ₽</strong>`;
+    }
+
     function addToCart(name, price) {
       cart.push({ name, price });
+      updateCartDisplay();
       alert(`${name} добавлен в корзину`);
     }
 
