@@ -2,92 +2,59 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Магазин Telegram</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Каталог</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f9f9f9;
-      color: #333;
-    }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .product-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .product-image {
-      width: 100%;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
-    .product-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .product-price {
-      font-size: 18px;
-      color: #2e8b57;
-      margin-bottom: 20px;
-    }
-    input, button {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      background: #24a0ed;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1b85d6;
-    }
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    .item { background: white; padding: 15px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .item img { width: 100%; border-radius: 6px; margin-bottom: 10px; }
+    .item h3, .item p { margin: 5px 0; }
+    button { width: 100%; padding: 10px; margin-top: 10px; background: #007acc; border: none; color: white; border-radius: 6px; font-size: 16px; }
+    #checkout { margin-top: 30px; background: #2e8b57; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="product-card">
-      <img src="https://via.placeholder.com/400x200.png?text=Фото+товара" alt="Товар" class="product-image" />
-      <div class="product-title">Умная колонка</div>
-      <div class="product-price">6 990 ₽</div>
+  <h2>🛒 Каталог товаров</h2>
 
-      <input id="qty" type="number" placeholder="Количество" min="1" />
-      <input id="phone" type="tel" placeholder="Ваш телефон" />
-
-      <button onclick="sendOrder()">Оформить заказ</button>
-    </div>
+  <div class="item">
+    <img src="https://via.placeholder.com/400x200.png?text=Умная+колонка" alt="">
+    <h3>Умная колонка</h3>
+    <p>Цена: 6 990 ₽</p>
+    <button onclick="addToCart('Умная колонка', 6990)">Добавить в корзину</button>
   </div>
 
+  <div class="item">
+    <img src="https://via.placeholder.com/400x200.png?text=Видеорегистратор" alt="">
+    <h3>Видеорегистратор</h3>
+    <p>Цена: 3 500 ₽</p>
+    <button onclick="addToCart('Видеорегистратор', 3500)">Добавить в корзину</button>
+  </div>
+
+  <div class="item">
+    <img src="https://via.placeholder.com/400x200.png?text=Авто+Зарядка" alt="">
+    <h3>Автомобильное зарядное</h3>
+    <p>Цена: 990 ₽</p>
+    <button onclick="addToCart('Автозарядка', 990)">Добавить в корзину</button>
+  </div>
+
+  <button id="checkout" onclick="checkout()">Оформить заказ</button>
+
   <script>
-    function sendOrder() {
-      const qty = document.getElementById("qty").value;
-      const phone = document.getElementById("phone").value;
-      const data = {
-        товар: "Умная колонка",
-        количество: qty,
-        телефон: phone
-      };
-      Telegram.WebApp.sendData(JSON.stringify(data));
+    const cart = [];
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      alert(`${name} добавлен в корзину`);
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Корзина пуста!");
+        return;
+      }
+      Telegram.WebApp.sendData(JSON.stringify(cart));
       Telegram.WebApp.close();
     }
   </script>
 </body>
 </html>
-
-
