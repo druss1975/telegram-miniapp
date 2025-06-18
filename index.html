@@ -1,57 +1,152 @@
+<script>
+  const cart = [];
+  
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    renderCart();
+  }
+
+  function renderCart() {
+    const cartElement = document.getElementById("cart");
+    const totalElement = document.getElementById("total");
+
+    if (cart.length === 0) {
+      cartElement.innerHTML = "<p>Корзина пуста.</p>";
+      totalElement.textContent = "";
+      return;
+    }
+
+    let html = "<ul>";
+    let sum = 0;
+
+    cart.forEach(item => {
+      html += `<li>${item.name} — ${item.price} ₽</li>`;
+      sum += item.price;
+    });
+
+    html += "</ul>";
+    cartElement.innerHTML = `<h3>🧺 Ваша корзина:</h3>${html}`;
+    totalElement.innerHTML = `<strong>Сумма: ${sum} ₽</strong>`;
+  }
+
+  function submitOrder() {
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+
+    const data = {
+      name,
+      phone,
+      items: cart,
+      total: cart.reduce((sum, item) => sum + item.price, 0)
+    };
+
+    Telegram.WebApp.sendData(JSON.stringify(data));
+    Telegram.WebApp.close();
+  }
+</script>
+📥 Кнопка отправки
+html
+Copy
+Edit
+<input id="name" placeholder="Ваше имя" />
+<input id="phone" placeholder="Телефон" />
+<button onclick="submitOrder()">Оформить заказ</button>
+✅ Что будет работать:
+Пользователь кликает "Добавить в корзину" — товары добавляются в cart.
+
+Блок #cart обновляется с новым списком.
+
+Блок #total показывает итог.
+
+Кнопка "Оформить заказ" отправляет JSON в Telegram-бота через WebApp.sendData.
+
+Хочешь — могу сгенерировать полный HTML-файл под твой дизайн, с несколькими товарами, готовой корзиной и интеграцией с Telegram. Напиши — и я сделаю 👍
+
+
+
+
+
+
+
+
+You said:
+Да, сделай.
+
+
+ChatGPT said:
+Отлично! Ниже — готовый HTML-файл для Telegram WebApp-магазина с:
+
+тремя товарами,
+
+динамической корзиной,
+
+расчетом суммы,
+
+отправкой данных в Telegram-бота через Telegram.WebApp.sendData().
+
+✅ Полный рабочий код:
+html
+Copy
+Edit
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Магазин Telegram</title>
+  <title>Каталог Telegram-магазина</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f9f9f9;
-      margin: 0;
       padding: 20px;
       color: #333;
     }
-    .container {
-      max-width: 480px;
-      margin: auto;
-    }
-    .product {
-      background: #fff;
-      padding: 20px;
+    h2 {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
       margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    .product img {
-      width: 100%;
-      border-radius: 10px;
-      margin-bottom: 10px;
+    h2::before {
+      content: '📦';
+      margin-right: 10px;
+    }
+    .product-card, .cart-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
     .product-title {
       font-size: 18px;
       font-weight: 600;
-      margin: 5px 0;
     }
     .product-price {
-      font-size: 16px;
       color: #2e8b57;
-      margin-bottom: 10px;
+      margin: 5px 0 10px;
     }
     button {
       width: 100%;
       padding: 12px;
-      background: #007acc;
+      background: #007bff;
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
       cursor: pointer;
-      margin-top: 10px;
+      font-size: 16px;
     }
     button:hover {
-      background: #005fa3;
+      background: #0068d4;
+    }
+    .cart-box ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    .total {
+      font-weight: bold;
+      margin-top: 10px;
     }
     input {
       width: 100%;
@@ -61,100 +156,96 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
-    #cart-area {
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
-      margin-top: 20px;
-    }
-    ul { padding-left: 20px; }
-    li { margin-bottom: 5px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🛍️ Каталог товаров</h2>
 
-    <div class="product">
-      <img src="https://via.placeholder.com/400x200.png?text=Умная+колонка" />
-      <div class="product-title">Умная колонка</div>
-      <div class="product-price">6 990 ₽</div>
-      <button onclick="addToCart('Умная колонка', 6990)">Добавить в корзину</button>
-    </div>
+  <h2>Каталог товаров</h2>
 
-    <div class="product">
-      <img src="https://via.placeholder.com/400x200.png?text=Видеорегистратор" />
-      <div class="product-title">Видеорегистратор</div>
-      <div class="product-price">3 500 ₽</div>
-      <button onclick="addToCart('Видеорегистратор', 3500)">Добавить в корзину</button>
-    </div>
-
-    <div class="product">
-      <img src="https://via.placeholder.com/400x200.png?text=Авто+Зарядка" />
-      <div class="product-title">Автомобильное зарядное</div>
-      <div class="product-price">990 ₽</div>
-      <button onclick="addToCart('Автозарядка', 990)">Добавить в корзину</button>
-    </div>
-
-    <div id="cart-area">
-      <h3>🧺 Ваша корзина:</h3>
-      <ul id="cart-list"></ul>
-      <p id="cart-total"><strong>Сумма: 0 ₽</strong></p>
-    </div>
-
-    <input type="text" id="name" placeholder="Ваше имя" />
-    <input type="tel" id="phone" placeholder="Телефон" />
-    <button onclick="checkout()">Оформить заказ</button>
+  <div class="product-card">
+    <div class="product-title">Умная колонка</div>
+    <div class="product-price">6 990 ₽</div>
+    <button onclick="addToCart('Умная колонка', 6990)">Добавить в корзину</button>
   </div>
+
+  <div class="product-card">
+    <div class="product-title">Видеорегистратор</div>
+    <div class="product-price">3 500 ₽</div>
+    <button onclick="addToCart('Видеорегистратор', 3500)">Добавить в корзину</button>
+  </div>
+
+  <div class="product-card">
+    <div class="product-title">Автомобильное зарядное</div>
+    <div class="product-price">990 ₽</div>
+    <button onclick="addToCart('Автомобильное зарядное', 990)">Добавить в корзину</button>
+  </div>
+
+  <div class="cart-box" id="cart"></div>
+  <div class="total" id="total"></div>
+
+  <input id="name" type="text" placeholder="Ваше имя" />
+  <input id="phone" type="tel" placeholder="Телефон" />
+
+  <button onclick="submitOrder()">Оформить заказ</button>
 
   <script>
     const cart = [];
 
-    function updateCartDisplay() {
-      const list = document.getElementById('cart-list');
-      const total = document.getElementById('cart-total');
-      list.innerHTML = '';
-      let sum = 0;
-
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.name} — ${item.price} ₽`;
-        list.appendChild(li);
-        sum += item.price;
-      });
-
-      total.innerHTML = `<strong>Сумма: ${sum} ₽</strong>`;
-    }
-
     function addToCart(name, price) {
       cart.push({ name, price });
-      updateCartDisplay();
-      alert(`${name} добавлен в корзину`);
+      renderCart();
     }
 
-    function checkout() {
-      const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
+    function renderCart() {
+      const cartElement = document.getElementById("cart");
+      const totalElement = document.getElementById("total");
 
       if (cart.length === 0) {
-        alert("Корзина пуста!");
+        cartElement.innerHTML = "<p>Корзина пуста.</p>";
+        totalElement.textContent = "";
         return;
       }
 
+      let html = "<h3>🧺 Ваша корзина:</h3><ul>";
+      let sum = 0;
+
+      cart.forEach(item => {
+        html += `<li>${item.name} — ${item.price} ₽</li>`;
+        sum += item.price;
+      });
+
+      html += "</ul>";
+      cartElement.innerHTML = html;
+      totalElement.innerHTML = `Сумма: ${sum} ₽`;
+    }
+
+    function submitOrder() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
       if (!name || !phone) {
-        alert("Пожалуйста, заполните имя и телефон!");
+        alert("Пожалуйста, заполните имя и телефон.");
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert("Корзина пуста.");
         return;
       }
 
       const order = {
-        contact: { name, phone },
-        items: cart
+        name,
+        phone,
+        items: cart,
+        total: cart.reduce((sum, item) => sum + item.price, 0)
       };
 
       Telegram.WebApp.sendData(JSON.stringify(order));
       Telegram.WebApp.close();
     }
+
+    // Подключение WebApp интерфейса Telegram
+    Telegram.WebApp.ready();
   </script>
 </body>
 </html>
