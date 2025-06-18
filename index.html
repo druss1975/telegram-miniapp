@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Оформление заказа</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+    h2 { margin-top: 0; }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #24a0ed;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>🛍 Оформление заказа</h2>
+  <input id="product" placeholder="Название товара" />
+  <input id="count" type="number" placeholder="Количество" />
+  <input id="phone" type="tel" placeholder="Телефон" />
+
+  <button onclick="sendData()">Отправить</button>
+
+  <script>
+    function sendData() {
+      const data = {
+        товар: document.getElementById("product").value,
+        количество: document.getElementById("count").value,
+        телефон: document.getElementById("phone").value
+      };
+      Telegram.WebApp.sendData(JSON.stringify(data));
+      Telegram.WebApp.close();
+    }
+  </script>
+</body>
+</html>
